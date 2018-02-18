@@ -1,0 +1,32 @@
+##Update Deployment (adding replicas etc)
+kubectl edit deployment <Deployment Name>
+
+##Checking the result of the deployment change
+kubectl rollout status deployment <Deployment Name>
+
+##Autoscaling a Deployment
+kubectl autoscale deployment <deployment> --min=10 --max=15 --cpu-percent=50
+
+##Adjusting Autoscaler
+kubectl delete hpa
+kubectl autoscale deployment <deployment> --min=2 --max=10 --cpu-percent=50
+
+
+##Manual Scaling
+kubectl scale deployment corenlp-deployment --replicas=10
+
+##Getting on shell inside container
+kubectl get pod
+kubectl exec -it <pod> -- /bin/bash
+
+##Delete deployment
+kubectl get Deployment
+kubectl delete deployment <deployment>
+
+##Delete service
+kubectl get service
+kubectl delete service <service>
+
+##Delete secret
+kubectl get secret
+kubectl delete secret <secret>

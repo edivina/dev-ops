@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: solr-deployment
+  labels:
+    app: solr
+spec:
+  selector:
+    matchLabels:
+      app: solr
+      tier: solr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: solr
+        tier: solr
+    spec:
+      containers:
+      - image: solr
+        name: solr
+        ports:
+        - containerPort: 8983
+          name: solr-port
+        volumeMounts:
+        - name: solr-persistent-storage
+          mountPath: /var/lib/solr
+      volumes:
+      - name: solr-persistent-storage
+        persistentVolumeClaim:
+          claimName: solr-storage

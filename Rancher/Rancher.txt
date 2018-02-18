@@ -1,0 +1,9 @@
+##Command to re-register nodes after change of IP.
+
+sudo docker run --rm --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/rancher:/var/lib/rancher rancher/agent:v1.2.6 http://52.70.214.227:8080/v1/scripts/F9AD8057A74173D318E4:1514678400000:8do9Rh4cxc04rszV2L9gcJbJwo
+
+##How to Change Master URL for Registration
+
+Login to Rancher
+
+Click Admin and change the Host Registration URL

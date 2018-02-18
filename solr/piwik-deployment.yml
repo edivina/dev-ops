@@ -1,0 +1,46 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: piwik-deployment
+  labels:
+    app: piwik
+spec:
+  selector:
+    matchLabels:
+      app: piwik
+      tier: piwik
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: piwik
+        tier: piwik
+    spec:
+      containers:
+      - image: francoisp/piwik-nginx
+        name: piwik
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: solr-mysql-secrets
+              key: db_password
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: solr-mysql-secrets
+              key: db_user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: solr-mysql-secrets
+              key: db_password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: solr-mysql-secrets
+              key: db_name
+        ports:
+        - containerPort: 80
+          name: piwik-port

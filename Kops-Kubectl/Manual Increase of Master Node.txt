@@ -1,0 +1,36 @@
+####This is not recommended#####
+
+O6pmlvlsO6pmlvls
+
+ kubectl --namespace=kube-system get pods | grep etcd
+
+ kubectl --namespace=kube-system exec etcd-server-ip-172-31-94-102.ec2.internal -it -- sh
+
+
+ kubectl --namespace=kube-system get pod etcd-server-ip-172-31-94-102.ec2.internal -o json | jq '.spec.volumes[] | select(.name | contains("varetcdata")) | .hostPath.path'
+
+ etcd-server-ip-172-31-94-102.ec2.internal
+
+ mv /mnt/master-vol-09b0707c543a38142/var/etcd/data-events/backup/ /home/admin/backup-events
+
+
+ kops create instancegroup master-us-east-1e --subnet subnet-9e4f00a1 --role Master
+
+
+ kubectl --namespace=kube-system exec etcd-server-ip-172-31-94-102.ec2.internal -- etcdctl member add etcd-us-east-1e http://etcd-us-east-1e.internal.example.com:2380 \
+	&& kubectl --namespace=kube-system exec etcd-server-events-ip-172-31-94-102.ec2.internal -- etcdctl --endpoint http://127.0.0.1:4002 member add etcd-events-us-east-1e http://etcd-events-us-east-1e.internal.example.com:2381
+
+
+
+kubectl --namespace=kube-system exec etcd-server-ip-172-31-94-102.ec2.internal -- etcdctl member add etcd-e http://etcd-e.kubernetes.urban.org:2380 \
+	&& kubectl --namespace=kube-system exec etcd-server-events-ip-172-31-94-102.ec2.internal -- etcdctl --endpoint http://127.0.0.1:4002 member add etcd-events-e http://etcd-events-e.kubernetes.urban.org:2381
+
+ssh admin@52.3.246.203
+
+systemctl stop kubelet
+
+systemctl stop protokube
+
+docker stop $(docker ps | grep "gcr.io/google_containers/etcd" | awk '{print $1}')
+
+docker run -it --rm -v volume1:/datavolume1 61c39c660e45

@@ -1,0 +1,6 @@
+kubectl create secret docker-registry regsecret --docker-server=docker.io/eegrad85 --docker-username=eegrad85 --docker-password=Gr8Pnoy88! --docker-email=edivina@urban.org
+
+docker.io/eegrad85/solr
+
+kubectl create secret docker-registry urbanregsecret --docker-server=docker.io/urbaninstitute --docker-username=<username>--docker-password=<password> --docker-email=<emailaddress>
+
