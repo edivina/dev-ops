@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: corenlp-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 9000
+    protocol: TCP
+  selector:
+     app: corenlp
+  type: LoadBalancer

@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: corenlp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: corenlp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: corenlp
+    spec:
+      containers:
+      - name: corenlp-complete-custom
+        image: graham3333/corenlp-complete-custom
+        ports:
+        - name: corenlp-port
+          containerPort: 9000
