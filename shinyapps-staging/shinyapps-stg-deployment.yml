@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shinyapps-stg-deployment
+spec:
+  selector:
+    matchLabels:
+      app: shinyapps-stg
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shinyapps-stg
+    spec:
+      containers:
+      - name: shinyapps-stg-custom
+        image: 672001523455.dkr.ecr.us-east-1.amazonaws.com/shinyapps-stg:latest
+        ports:
+        - name: shinyapp-stg-port
+          containerPort: 3838
