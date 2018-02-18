@@ -36,3 +36,5 @@ kops rolling-update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180
 
 ##Rolling update for sure if there is a need for restart
 kops rolling-update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state --yes
+
+Added for testing atom and github
