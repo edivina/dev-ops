@@ -1,15 +1,41 @@
 ## Create a CA key
-openssl genrsa -out ca.key 2048
+openssl genrsa -out edivina.key 2048
 
-##Create CA Certificate
-openssl req -x509 -new -nodes -key ca.key -subj "/CN=${MASTER_IP}" -days 10000 -out ca.crt
+openssl req -new -key edivina.key -out edivina.csr -subj "/CN=edivina/O=devops"
 
-##Create CA csr.conf
+##Convert the csr into base64 encoding
+
+cat edivina.csr | base64 | tr -d '\n'
 
 
-##Generate Certificate user
-openssl genrsa -out <user>.key 2048
-openssl req -new -key edivina.key -out edivina.csr -subj "/CN=edivina/O=devops" -config csr.conf
+##Create Create a csr yml file as below and put the base 64 version on the csr into the request (edivina-csr.yml)
 
-##Generate the Certificate
-openssl x509 -req -in edivina.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out edivina.crt -days 10000 -extensions v3_ext -extfile csr.conf
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: user-request-edivina
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZUQ0NBVDBDQVFBd0VERU9NQXdHQTFVRUF3d0ZhbUZyZFdJd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQQpBNElCRHdBd2dnRUtBb0lCQVFDNGxQMTNVZHlBTDZ1QUttTVROeDU5RUtlTE14VkNWSTJVWUhWL2hvYjdpelBGCldRSmxaY1dEWllnL1dIVTJoMFJ3TGNkeWpaVTVHcTFPdS9IMjQxSWpBL3dTMXJSWnc1c0ZrNG8zYWdBZlJ0QngKbzZDc3czS0Q3eEpvdEtpRURzOXFqbUJPNzFwU1kzK3BqdHBZbUpxWmZ5cmV2Y094Wm12NXpSU2NaWUZkb1ZMdwptb0VxeUx0a1hDNzVpeXBGTFg2WjJwK25POFE2NHFtU2VZWHRjNFZBbjZhbjdlUFJFU3k5S09NUURZTHRUZENBClBaTVpDeXV0WnBXQnFqMXZlV3NkaWxweUlyaXdRYWtNQ2tBdURHbUxGbzJhbFk3REV4Z0t0ay8rZlZSaEkyY1YKRUJzVUptaVBuZ1NrMXhKRzZjWjdUZE12UXYxSnIyaGNsc1NDY1IySkFnTUJBQUdnQURBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FRRUFiL1BBcVp0eUovUHA2MWtXcG54azNDek9SNTdhT09JSHU3YkVUN1lmcE9GazFSN0JkV3hWClU1RXUrK3pTNVZmQm9XaVNNekV1eENrVHZsNU1CVGxDL3NvQWprT2YzQTI2aUFpeFJibksrUWw0ZGt1MGJQTisKT2syZ3pqTXZyM1hsT1ExZVZnQytjTVZzeXJpZENUMzRwcHVPNm9RTkZnVk1GblZ3bHozdjJnZkVDK3c1RnVndgpOVXcxT21td0c1RTZKN0VpL2ZSTk1scnUyTzZaUlQvMGYyWWpnSUhwT3RONTJYSDhhc3cvMjhMOWt1c1J6aHR5CnFLa0xxWGhkYW4xSDRsR1E2VUwxd1V4UU8zUWhyRnUrbkhFRTV3SVdDNEFra0N4K1NPQ3RpalNmV2Vhb3dkTzcKRG8zaWJvWGNwTzVSUDYvYUhEWE9kV0ZXc2EvQituVG9Vdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  usages:
+  - digital signature
+  - key encipherment
+  - client auth
+
+##Create the kubernetes reqource (CertificateSinging request)
+Kubectl create -f edivina.yml
+
+##Approve the request
+kubectl certificate approve user-request-edivina
+
+##Download the certificate from the cluster
+
+kubectl get csr user-request-gmacdonald -o jsonpath='{.status.certificate}' | base64 -d > edivina.crt
+
+##Create config for the user
+
+kubectl --kubeconfig ~/.kube/config-edivina config set-cluster kubernetes --insecure-skip-tls-verify=true --server=https://api.kubernetes.urban.org
+kubectl --kubeconfig ~/.kube/config-edivina config set-credentials edivina --client-certificate=edivina.crt --client-key=edivina.key --embed-certs=true
+kubectl --kubeconfig ~/.kube/config-edivina config set-context default --cluster=kubernetes --user=edivina
+kubectl --kubeconfig ~/.kube/config-edivina config use-context default
