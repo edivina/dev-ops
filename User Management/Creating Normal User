@@ -1,0 +1,15 @@
+## Create a CA key
+openssl genrsa -out ca.key 2048
+
+##Create CA Certificate
+openssl req -x509 -new -nodes -key ca.key -subj "/CN=${MASTER_IP}" -days 10000 -out ca.crt
+
+##Create CA csr.conf
+
+
+##Generate Certificate user
+openssl genrsa -out <user>.key 2048
+openssl req -new -key edivina.key -out edivina.csr -subj "/CN=edivina/O=devops" -config csr.conf
+
+##Generate the Certificate
+openssl x509 -req -in edivina.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out edivina.crt -days 10000 -extensions v3_ext -extfile csr.conf

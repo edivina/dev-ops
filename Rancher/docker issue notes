@@ -1,0 +1,9 @@
+##Docker issue
+service docker status
+
+Solution
+rm -rf /var/run/docker.*
+
+rm -rf /var/lock/subsys/docker
+
+not really necessary rm -rf /var/lib/docker/*
