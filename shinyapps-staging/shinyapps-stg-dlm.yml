@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shinyapps-stg-dlm
+  namespace: default
+  labels:
+    app: shinyapps-stg
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shinyapps-stg
+    spec:
+      containers:
+      - name: shinyapps-stg
+        imagePullPolicy: Always
+        image: 672001523455.dkr.ecr.us-east-1.amazonaws.com/shinyapps-stg:latest
+        ports:
+        - containerPort: 3838
+        resources:
+          limits:
+            cpu: 100m
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 4Gi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3838
+        volumeMounts:
+           - name: config-volume
+             mountPath: /etc/shiny-server
+           - name: shinyapps-stg-persistent-storage
+             mountPath: /app
+      volumes:
+      - name: shinyapps-stg-persistent-storage
+        persistentVolumeClaim:
+           claimName: shinyapps-stg-storage
+      - name: config-volume
+        configMap:
+          name: shiny-server-config
+          items:
+          - key: shiny-server.conf
+            path: shiny-server.conf
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: us-east-1d

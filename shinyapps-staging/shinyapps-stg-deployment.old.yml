@@ -18,3 +18,10 @@ spec:
         ports:
         - name: shinyapp-stg-port
           containerPort: 3838
+        volumeMounts:
+        - name: shinyapps-stg-persistent-storage
+          mountPath: /srv
+      volumes:
+      - name: shinyapps-stg-persistent-storage
+        persistentVolumeClaim:
+          claimName: shinyapps-stg-storage

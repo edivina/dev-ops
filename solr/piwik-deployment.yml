@@ -44,3 +44,5 @@ spec:
         ports:
         - containerPort: 80
           name: piwik-port
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: us-east-1d
