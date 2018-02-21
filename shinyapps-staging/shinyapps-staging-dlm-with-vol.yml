@@ -30,19 +30,11 @@ spec:
             path: /
             port: 3838
         volumeMounts:
-           - name: config-volume
-             mountPath: /etc/shiny-server
-           - name: shinyapps-stg-pv
-             mountPath: /app
+           - name: shinyapps-stg-pv-storage
+             mountPath: /hosted
       volumes:
-      - name: shinyapps-stg-pv
-        persistentVolumeClaim:
-           claimName: shinyapps-stg-storage
-      - name: config-volume
-        configMap:
-          name: shiny-server-config
-          items:
-          - key: shiny-server.conf
-            path: shiny-server.conf
+      - name: shinyapps-stg-pv-storage
+        awsElasticBlockStore:
+          volumeID: vol-0eb8cf96da24a362f
       nodeSelector:
         failure-domain.beta.kubernetes.io/zone: us-east-1d

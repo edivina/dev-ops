@@ -1,0 +1,40 @@
+##Setting up the cluster with 3 Master and 3 nodes spread out into 3 availability zones- This will create the configuration file
+kops create cluster --name=kubernetes.urban.org --vpc=vpc-97a4e8f2 --network-cidr=172.31.0.0/16 --node-count=3 --zones=us-east-1c,us-east-1d,us-east-1e --master-count=3 --master-zones=us-east-1c,us-east-1d,us-east-1e --node-size=t2.small --master-size=t2.small --state=s3://kubernetes-ed20180211/kops-state
+
+##If you want to make changes specially the subnet addresses because kops will set its own addressing. Must specify an address space that is not yet created.
+kops edit cluster --name=kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state
+
+----Change the subnet to the one you desired to use. The subnet should Network-Cidr must not be existing.
+
+
+##Run Update just to update the configuration file
+kops update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state
+
+##Run the cluster creation and build the cluster
+kops update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state --yes
+
+
+
+##Change Cluster Config
+kops edit cluster --name=kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state
+
+
+###Change Node InstanceGroup (ig) of the Cluster
+kops edit ig --name=kubernetes.urban.org nodes --state=s3://kubernetes-ed20180211/kops-state
+
+##Change Master InstanceGroup (ig) of the Cluster
+kops edit ig --name=kubernetes.urban.org  master-us-east-1c --state=s3://kubernetes-ed20180211/kops-state
+
+##Apply the Changes to verify changes to be made
+kops update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state
+
+##Apply the Changes for sure
+kops update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state --yes
+
+##Rolling update if needed
+kops rolling-update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state
+
+##Rolling update for sure if there is a need for restart
+kops rolling-update cluster kubernetes.urban.org --state=s3://kubernetes-ed20180211/kops-state --yes
+
+Added for testing atom and github
