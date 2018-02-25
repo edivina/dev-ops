@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: solr-mysql-deployment
+  name: election-mysql-deployment
   labels:
     app: mysql
 spec:
@@ -24,17 +24,23 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: solr-mysql-secrets
+              name: election-mysql-secrets
               key: db_password
         ports:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
+        - name: config-election-mysqld
+          mountPath: /etc/mysql/mysql.conf.d
+        - name: efs-election-mysql
+          mountPath: /datavol
       volumes:
-      - name: mysql-persistent-storage
+      - name: config-election-mysqld
+        configMap:
+          name: election-mysqld-config
+          items:
+          - key: mysqld.cnf
+            path: mysqld.cnf
+      - name: efs-election-mysql
         persistentVolumeClaim:
-          claimName: db-storage
-      nodeSelector:
-        failure-domain.beta.kubernetes.io/zone: us-east-1d
+          claimName: efs-election-mysql

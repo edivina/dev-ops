@@ -45,17 +45,13 @@ spec:
         - containerPort: 80
           name: piwik-port
         volumeMounts:
-        - name: efs-pvc
-          mountPath: /piwikconfig
-        - name: config-piwik
-          mountPath: /piwik/config
+          - name: config-piwik
+            mountPath: /piwik
       volumes:
-      - name: efs-pvc
-        persistentVolumeClaim:
-          claimName: efs
-      - name: config-piwik
         configMap:
-          name: piwik-config
-          items:
+          name: config-piwik
+            items:
             - key: config.ini.php
               path: config.ini.php
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: us-east-1d
