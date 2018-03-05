@@ -30,3 +30,20 @@ kubectl delete service <service>
 ##Delete secret
 kubectl get secret
 kubectl delete secret <secret>
+
+##Change PVC reclaim Policy
+kubectl patch pv <your-pv-name> -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+
+##Create a configMap from file
+kubectl create configmap piwik-config --from-file=config.ini.php=/piwik/config/
+
+##Namespace Commands
+kubectl get namespaces --show-labels
+
+##Create a configmap based on an existing file
+kubectl create configmap game-config --from-file=<file source>
+
+#multiple files:
+kubectl create configmap game-config --from-file=<file source> --from-file<second source>
+
+kubectl create configmap election-web --from-file=production.py --from-file=local.py

@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: electioncal-nginx-deployment
+  labels:
+    app: election-nginx
+spec:
+  selector:
+    matchLabels:
+      app: election-nginx
+      tier: election-nginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: election-nginx
+        tier: election-nginx
+    spec:
+      containers:
+      - image: 672001523455.dkr.ecr.us-east-1.amazonaws.com/electioncalcdockerdev_web
+        name: election-nginx
+        ports:
+        - containerPort: 80
+          name: election-nginx
+          targetPort: 80
+        volumeMounts:
+        - name: efs-election-nginx
+          mountPath: /www/static
+        - name: efs-election-web
+          mountPath: /static
+      volumes:
+      - name: efs-election-ngix
+        persistentVolumeClaim:
+          claimName: efs-election-nginx
+      - name: efs-election-web
+        persistentVolumeClaim:
+          claimName: efs-election-web

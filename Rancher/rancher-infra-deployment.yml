@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: rancher-master-deployment
+  labels:
+    app: rancher
+spec:
+  selector:
+    matchLabels:
+      app: rancher
+      tier: rancher
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rancher
+        tier: rancher
+    spec:
+      containers:
+      - image: rancher/server
+        name: rancher
+        ports:
+        - containerPort: 8080
+          name: rancher-port

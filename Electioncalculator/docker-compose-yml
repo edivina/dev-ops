@@ -1,0 +1,35 @@
+root@election-nginx-deployment-678dd6cb4c-bl7w7:/usr/src/app# more docker-compose.yml
+version: '2'
+services:
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes:
+      #- ./WebApp/electioncalc/static/electioncalc/:/www/static
+      - ./WebApp/electioncalc/static/:/www/static
+    volumes_from:
+      - web
+    links:
+     - web:web
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306"
+    env_file: .env
+    volumes:
+      - ./WebApp/scripts/:/scripts
+  web:
+    restart: always
+    build: .
+    expose:
+      - "8000"
+    volumes:
+      #- ./WebApp/electioncalc:/WebApp/electioncalc/
+      - ./WebApp/electioncalc/static/electioncalc/:/static
+    links:
+      - db:mysql
+    env_file: .env
+    command: /usr/src/app/uwsgi/init.sh

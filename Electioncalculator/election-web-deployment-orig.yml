@@ -1,0 +1,77 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: election-web-deployment
+  labels:
+    app: election-web
+spec:
+  selector:
+    matchLabels:
+      app: election-web
+      tier: election-web
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: election-web
+        tier: election-web
+    spec:
+      containers:
+      - image: 672001523455.dkr.ecr.us-east-1.amazonaws.com/electioncalcdockerdev_web
+        name: election-web
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: election-mysql
+              key: db_password
+        - name : MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: election-mysql
+              key: db_user
+        - name : MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: election-mysql
+              key: db_name
+        - name : MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: election-mysql
+              key: db_password
+        -name : MYSQL_CONTAINER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: election-mysql
+              key: db_host
+        -name : MYSQL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: election-mysql
+              key: db_port
+        ports:
+        - containerPort: 8000
+          name: election-web
+        volumeMounts:
+        - name: efs-election-web
+          mountPath: /static
+        - name: config-election-web
+          mountPath: /usr/src/app/WebApp/settings/production.py
+          subPath: production.py
+        - name: config-election-web
+          mountPath: /usr/src/app/WebApp/settings/local.py
+          subPath: local.py
+      volumes:
+      - name: efs-election-web
+        persistentVolumeClaim:
+          claimName: efs-election-web
+      - name: config-election-web
+        configMap:
+          name: election-web
+          items:
+          - key: production.py
+            path: production.py
+          - key: local.py
+            path: local.py

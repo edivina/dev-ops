@@ -3,41 +3,41 @@ kind: Deployment
 metadata:
   name: election-mysql-deployment
   labels:
-    app: mysql
+    app: election-mysql
 spec:
   selector:
     matchLabels:
-      app: mysql
-      tier: mysql
+      app: election-mysql
+      tier: election-mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql
-        tier: mysql
+        app: election-mysql
+        tier: election-mysql
     spec:
       containers:
-      - image: mysql:5.7
-        name: mysql
+      - image: 672001523455.dkr.ecr.us-east-1.amazonaws.com/electioncalcdockerdev_mysql
+        name: election-mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: election-mysql-secrets
+              name: election-mysql
               key: db_password
         ports:
         - containerPort: 3306
-          name: mysql
+          name: election-mysql
         volumeMounts:
         - name: config-election-mysqld
           mountPath: /etc/mysql/mysql.conf.d
         - name: efs-election-mysql
-          mountPath: /datavol
+          mountPath: /static
       volumes:
       - name: config-election-mysqld
         configMap:
-          name: election-mysqld-config
+          name: election-mysql
           items:
           - key: mysqld.cnf
             path: mysqld.cnf

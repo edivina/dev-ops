@@ -1,0 +1,11 @@
+##Create a new docker image to commit new changes for push to container registry
+docker commit -m "Message" -a "Athor Name" <ContainerID>
+docker commit -m "Message" -a "Author Name" [containername] [imagename]
+
+##Tag the new imagename for AWS ecr
+docker tag <new image name or id> <AWS ECR REgistry name>
+docker tag <4af43fe85bf7> <672001523455.dkr.ecr.us-east-1.amazonaws.com/electioncalcdockerdev_web:latest>
+
+##Push new image to AWS ecr
+docker push <name you tagged the new image>
+docker push <672001523455.dkr.ecr.us-east-1.amazonaws.com/electioncalcdockerdev_web:latest>
