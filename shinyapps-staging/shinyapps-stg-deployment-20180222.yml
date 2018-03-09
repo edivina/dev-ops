@@ -34,20 +34,13 @@ spec:
              mountPath: /mnt
            - name: config-volume
              mountPath: /etc/shiny-server
-           - name: shinyapps-stg-pv
-             mountPath: /app
       volumes:
       - name: efs-pvc
         persistentVolumeClaim:
           claimName: efs-shinyapps-stg
-      - name: shinyapps-stg-pv
-        persistentVolumeClaim:
-           claimName: shinyapps-stg-storage
       - name: config-volume
         configMap:
           name: shiny-server-config
           items:
           - key: shiny-server.conf
             path: shiny-server.conf
-      nodeSelector:
-        failure-domain.beta.kubernetes.io/zone: us-east-1d
