@@ -31,7 +31,7 @@ spec:
             port: 3838
         volumeMounts:
            - name: efs-pvc
-             mountPath: /mnt
+             mountPath: /app
            - name: config-volume
              mountPath: /etc/shiny-server
       volumes:
